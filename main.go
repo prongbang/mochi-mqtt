@@ -41,14 +41,14 @@ func main() {
 	// d, _ := authRules.ToJSON()
 	// fmt.Println(string(d))
 
-	err := server.AddHook(new(auth.Hook), &auth.Options{
-		Ledger: authRules,
-	})
+	err := server.AddHook(new(CustomAuthHook), map[string]any{})
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = server.AddHook(new(CustomAuthHook), map[string]any{})
+	err = server.AddHook(new(auth.Hook), &auth.Options{
+		Ledger: authRules,
+	})
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/mochi-co/mqtt/v2"
 	"github.com/mochi-co/mqtt/v2/packets"
@@ -48,10 +49,14 @@ func (h *CustomAuthHook) OnConnectAuthenticate(cl *mqtt.Client, pk packets.Packe
 		return true
 	}
 
-	h.Log.Info().
-		Str("username", string(pk.Connect.Username)).
-		Str("remote", cl.Net.Remote).
-		Msg("client failed authentication check")
+	// Logging for JWT is invalid only
+	username := string(cl.Properties.Username)
+	if len(strings.Split(username, ".")) >= 3 {
+		h.Log.Info().
+			Str("username", string(pk.Connect.Username)).
+			Str("remote", cl.Net.Remote).
+			Msg("client failed authentication check")
+	}
 
 	return false
 }
